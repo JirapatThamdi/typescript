@@ -1,9 +1,20 @@
 // Manual data types
 type Pizza = {
-    id: number
+    id?: number
     name: string
     price: number
 }
+
+// type PizzaUpdate = {
+//     id?: number
+//     name?: string
+//     price?: number
+// }
+
+// Utility type
+// Partial is used to make all the properties in the type 'optional'
+// Required is used to make all the properties in the type 'required'
+type PizzaUpdate = Partial<Pizza>
 
 type Order = {
     id: number
@@ -25,7 +36,22 @@ const menu: Pizza[] = [
 
 // Void is used when the function does not return anything
 const addNewPizza = (pizzaObj: Pizza): void => {
+    pizzaObj.id = nextPizzaId++
     menu.push(pizzaObj)
+}
+
+// Using uitility type off Omit
+// Which is remove unwanted field in the model
+// In case of let's database insert id it automatically
+const newAddNewPizza = (newPizza: Omit<Pizza, "id">): Pizza => {
+    const pizza: Pizza = {
+        id: nextPizzaId++,
+        ...newPizza
+    }
+
+    menu.push(pizza)
+
+    return pizza    
 }
 
 const placeOrder = (pizzaName: string): Order | undefined => {
@@ -61,6 +87,19 @@ const completeOrder = (orderId: number): Order | undefined => {
     return order
 }
 
+// Using Partial uitility type to make type optional
+const updatePizza = (id: number, updatePizza: PizzaUpdate): Pizza | undefined => {
+    const pizza = menu.find((pizza) => pizza.id === id)
+
+    // Always check if variable exits after using some method
+    if (!pizza) {
+        console.error(`${id} does not exist in the menu`)
+        return
+    }
+
+    Object.assign(pizza, updatePizza)
+}
+
 // Without declare return type, typescript will automatically detect the return type
 // In this case it will be Pizza | undefined
 export const getPizzaDetail = (identifier: string | number): Pizza | undefined => {
@@ -73,9 +112,9 @@ export const getPizzaDetail = (identifier: string | number): Pizza | undefined =
     }
 }
 
-addNewPizza({ id: nextPizzaId++, name: 'Hawaiian', price: 20 })
-addNewPizza({ id: nextPizzaId++, name: 'Veggie', price: 18 })
-addNewPizza({ id: nextPizzaId++, name: 'Meat Feast', price: 22 })
+newAddNewPizza({ name: 'Hawaiian', price: 20 })
+newAddNewPizza({ name: 'Veggie', price: 18 })
+newAddNewPizza({ name: 'Meat Feast', price: 22 })
 
 placeOrder('Pepperoni')
 completeOrder(1)
