@@ -54,6 +54,17 @@ const newAddNewPizza = (newPizza: Omit<Pizza, "id">): Pizza => {
     return pizza    
 }
 
+// Generic function
+// This case is use for function that parameter of any array type
+const addToArray = <Type>(array: Type[], item: Type) => {
+    array.push(item)
+    return array
+}
+
+addToArray(menu, {id: nextPizzaId++, name:"palm", price: 50})
+// Generic type that use a union string should declare like this
+addToArray<Order>(orderQueue, {id: nextOrderId++, pizza: menu[2], status: "completed"})
+
 const placeOrder = (pizzaName: string): Order | undefined => {
     // Triple equals is used to check if the value and type are the same
     // If double equals is used, it will only check the value are the same
@@ -112,6 +123,10 @@ export const getPizzaDetail = (identifier: string | number): Pizza | undefined =
     }
 }
 
+const getLastPizza = <Type>(array: Type[]) => {
+    return array[array.length - 1]
+}
+
 newAddNewPizza({ name: 'Hawaiian', price: 20 })
 newAddNewPizza({ name: 'Veggie', price: 18 })
 newAddNewPizza({ name: 'Meat Feast', price: 22 })
@@ -122,3 +137,4 @@ completeOrder(1)
 console.log('Order queue:', menu)
 console.log('Cash in register:', cashInRegister)
 console.log('Order queue:', orderQueue)
+console.log('Last menu:', getLastPizza(menu))
